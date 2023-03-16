@@ -1,6 +1,7 @@
 package com.healthcare.cadusers.services;
 
 import com.healthcare.cadusers.entities.Credential;
+import com.healthcare.cadusers.entities.PhoneNumber;
 import com.healthcare.cadusers.entities.User;
 import com.healthcare.cadusers.forms.UserForm;
 import com.healthcare.cadusers.repositories.UserRepository;
@@ -25,6 +26,9 @@ public class UserServices {
         Map<String, String> checkUser = validateUser(user);
         Credential credential = userForm.getCredential();
         Map<String, String> checkCredential = validateCredential(credential);
+
+
+
         Map<String, String> ret = new HashMap<>();
         ret.putAll(checkUser);
         ret.putAll(checkCredential);
@@ -57,6 +61,24 @@ public class UserServices {
         return ret;
     }
 
+    private Map<String, String> validatePhone(PhoneNumber phoneNumber){
+        boolean ddiCheck = validateServices.checkDDI(phoneNumber.getPhoneDDI());
+        Map<String, String> ret = new HashMap<>();
+        if (!ddiCheck)
+            ret.put("ddi", "DDI is invalid");
 
+        boolean dddCheck = validateServices.checkDDD(phoneNumber.getPhoneDDD());
+        if (!dddCheck)
+            ret.put("ddd", "DDD is invalid");
 
+        boolean numberCheck = validateServices.checkNumber(phoneNumber.getPhoneNumber());
+        if (!numberCheck)
+            ret.put("phone_number", "phone number is invalid");
+
+        boolean typeCheck = validateServices.checkTypeNumber(phoneNumber.getPhoneType());
+        if (!typeCheck)
+            ret.put("type_number", "phone type is invalid");
+
+        return ret;
+    }
 }
