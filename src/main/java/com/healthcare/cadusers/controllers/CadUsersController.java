@@ -18,7 +18,7 @@ public class CadUsersController {
 
     @PostMapping("cad/user")
     public ResponseEntity<?> operatorRegistration(@RequestBody UserForm userForm) throws URISyntaxException {
-        userServices.saveOperator(userForm);
+        userServices.saveUserForm(userForm);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

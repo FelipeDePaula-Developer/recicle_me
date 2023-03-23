@@ -14,7 +14,7 @@ import java.util.Map;
 @Component
 public interface UserServicesInterface extends ValidateServices {
 
-    public default Map<String, String> saveOperator(UserForm userForm){
+    public default Map<String, String> validateUserForm(UserForm userForm){
         User user = new User(userForm.getName(), userForm.getEmail(), userForm.getCpf(), "T");
         Map<String, String> checkUser = validateUser(user);
         Credential credential = userForm.getCredential();
