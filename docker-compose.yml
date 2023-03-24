@@ -17,7 +17,7 @@ services:
       POSTGRES_PORT: 5432
   postgresqldb:
     container_name: postgresqldb
-    image: postgres
+    image: postgres:15-alpine3.17
     ports:
       - "5433:5432"
     user: postgres
@@ -28,9 +28,48 @@ services:
       POSTGRES_USER: postgres
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 30s
-      timeout: 30s
+      interval: 5s
+      timeout: 5s
       retries: 2
     volumes:
-      - /c/DockerVolumes/postgresql/:/var/lib/postgresql
-
+      - postgresqldb_data:/var/lib/postgresql/data
+  sonarqube:
+      image: sonarqube:community
+      depends_on:
+        dbsonarqube:
+          condition: service_healthy
+      environment:
+          SONAR_JDBC_URL: jdbc:postgresql://dbsonarqube:5432/sonar
+          SONAR_JDBC_USERNAME: postgres
+          SONAR_JDBC_PASSWORD: postgres
+          SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: true
+      volumes:
+        - sonarqube_data:/opt/SonarQube/data
+        - sonarqube_extensions:/opt/SonarQube/extensions
+        - sonarqube_logs:/opt/SonarQube/logs
+      ports:
+        - "9000:9000"
+  dbsonarqube:
+      container_name: dbsonarqube
+      image: postgres
+      ports:
+        - "6433:5432"
+      user: postgres
+      environment:
+        POSTGRES_HOST: dbsonarqube
+        POSTGRES_DB: sonar
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_USER: postgres
+      healthcheck:
+        test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+        interval: 5s
+        timeout: 5s
+        retries: 2
+      volumes:
+        - dbsonarqube_data:/var/lib/postgresql/data
+volumes:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  postgresqldb_data:
+  dbsonarqube_data:

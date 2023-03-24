@@ -1,29 +1,29 @@
 package com.healthcare.cadusers.forms;
 
+import com.healthcare.cadusers.entities.Credential;
+import com.healthcare.cadusers.entities.PhoneNumber;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class UserForm {
     private String name;
     private String email;
     private String cpf;
-    private List<Map<String, String>> phone;
-    private List<Map<String, String>> credential;
+    private List<PhoneNumber> phone;
+    private Credential credential;
 
     public UserForm() {
     }
 
-    public UserForm(String name, String email, String cpf, List<Map<String, String>> phone, List<Map<String, String>> credential) {
+    public UserForm(String name, String email, String cpf, List<PhoneNumber> phone, Credential credential) {
         this.name = name;
         this.email = email;
         this.cpf = cpf;
         this.phone = phone;
         this.credential = credential;
     }
-
     public String getName() {
         return name;
     }
@@ -48,19 +48,19 @@ public class UserForm {
         this.cpf = cpf;
     }
 
-    public List<Map<String, String>> getPhone() {
+    public List<PhoneNumber> getPhone() {
         return phone;
     }
 
-    public void setPhone(List<Map<String, String>> phone) {
+    public void setPhone(List<PhoneNumber> phone) {
         this.phone = phone;
     }
 
-    public List<Map<String, String>> getCredential() {
+    public Credential getCredential() {
         return credential;
     }
 
-    public void setCredential(List<Map<String, String>> credential) {
+    public void setCredential(Credential credential) {
         this.credential = credential;
     }
 }

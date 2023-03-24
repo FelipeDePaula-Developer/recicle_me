@@ -1,8 +1,12 @@
 package com.healthcare.cadusers.entities;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.Type;
-import org.hibernate.type.descriptor.jdbc.NVarcharJdbcType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+
+
 
 @Entity(name = "clients")
 public class Client {

@@ -1,6 +1,13 @@
 package com.healthcare.cadusers.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+
 
 @Entity(name = "clinic_doctors")
 public class Doctor {
@@ -10,7 +17,7 @@ public class Doctor {
     @Column(length = 100)
     private String name;
     @Column(length = 50)
-    private String license_registration;
+    private String licenseRegistration;
     @Column(columnDefinition = "CHAR default 'T'", length = 1, nullable = false)
     private String status;
     @Column(columnDefinition="TIMESTAMP default CURRENT_TIMESTAMP", name = "insert_timestamp")
@@ -26,9 +33,9 @@ public class Doctor {
     public Doctor() {
     }
 
-    public Doctor(String name, String license_registration, String status, Clinic clinic, MedicineSpeciality medicineSpeciality) {
+    public Doctor(String name, String licenseRegistration, String status, Clinic clinic, MedicineSpeciality medicineSpeciality) {
         this.name = name;
-        this.license_registration = license_registration;
+        this.licenseRegistration = licenseRegistration;
         this.status = status;
         this.clinic = clinic;
         this.medicineSpeciality = medicineSpeciality;
@@ -50,12 +57,12 @@ public class Doctor {
         this.name = name;
     }
 
-    public String getLicense_registration() {
-        return license_registration;
+    public String getLicenseRegistration() {
+        return licenseRegistration;
     }
 
-    public void setLicense_registration(String license_registration) {
-        this.license_registration = license_registration;
+    public void setLicenseRegistration(String licenseRegistration) {
+        this.licenseRegistration = licenseRegistration;
     }
 
     public String getStatus() {

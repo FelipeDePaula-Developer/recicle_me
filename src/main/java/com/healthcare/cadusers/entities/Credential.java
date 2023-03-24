@@ -1,6 +1,12 @@
 package com.healthcare.cadusers.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 
 @Entity(name = "credentials")
 public class Credential {
@@ -31,14 +37,17 @@ public class Credential {
     public Credential() {
     }
 
-    public Credential(String login, String password, String logged, String status, Doctor doctor, User user, Client client) {
+    public Credential(String login, String password) {
         this.login = login;
         this.password = password;
-        this.logged = logged;
-        this.status = status;
-        this.doctor = doctor;
-        this.user = user;
-        this.client = client;
+    }
+
+    public Integer getIdcredential() {
+        return idcredential;
+    }
+
+    public void setIdcredential(Integer idcredential) {
+        this.idcredential = idcredential;
     }
 
     public String getLogin() {
