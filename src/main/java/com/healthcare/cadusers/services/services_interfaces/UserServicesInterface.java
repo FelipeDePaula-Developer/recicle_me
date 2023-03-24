@@ -6,6 +6,7 @@ import com.healthcare.cadusers.entities.User;
 import com.healthcare.cadusers.forms.UserForm;
 import com.healthcare.cadusers.repositories.UserRepository;
 import com.healthcare.cadusers.services.ValidateServices;
+import com.healthcare.cadusers.services.services_errors.InvalidDataError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.HashMap;
@@ -14,19 +15,7 @@ import java.util.Map;
 @Component
 public interface UserServicesInterface extends ValidateServices {
 
-    public default Map<String, String> validateUserForm(UserForm userForm){
-        User user = new User(userForm.getName(), userForm.getEmail(), userForm.getCpf(), "T");
-        Map<String, String> checkUser = validateUser(user);
-        Credential credential = userForm.getCredential();
-        Map<String, String> checkCredential = validateCredential(credential);
-
-        Map<String, String> ret = new HashMap<>();
-        ret.putAll(checkUser);
-        ret.putAll(checkCredential);
-        return ret;
-    }
-
-    private Map<String, String> validateUser(User user){
+    public default Map<String, String> validateUser(User user){
         boolean emailCheck = checkEmail(user.getEmail());
         Map<String, String> ret = new HashMap<>();
         if (!emailCheck)
@@ -39,7 +28,7 @@ public interface UserServicesInterface extends ValidateServices {
         return ret;
     }
 
-    private Map<String, String> validateCredential(Credential credential){
+    public default Map<String, String> validateCredential(Credential credential){
         Map<String, String> ret = new HashMap<>();
         boolean usernameCheck = checkUsername(credential.getLogin());
         if (!usernameCheck)
@@ -52,7 +41,7 @@ public interface UserServicesInterface extends ValidateServices {
         return ret;
     }
 
-    private Map<String, String> validatePhone(PhoneNumber phoneNumber){
+    public default Map<String, String> validatePhone(PhoneNumber phoneNumber){
         boolean ddiCheck = checkDDI(phoneNumber.getPhoneDDI());
         Map<String, String> ret = new HashMap<>();
         if (!ddiCheck)
@@ -71,5 +60,12 @@ public interface UserServicesInterface extends ValidateServices {
             ret.put("type_number", "phone type is invalid");
 
         return ret;
+    }
+    public default void checkValidationsReturn(Map<String, String> returns) throws InvalidDataError{
+        if (returns != null && !returns.isEmpty()){
+            String errorMsg = returns.entrySet().stream().map(
+                    (entry) -> " | " + entry.getKey() + " : " + entry.getValue()).toString();
+            throw new  InvalidDataError(errorMsg);
+        }
     }
 }
