@@ -1,6 +1,7 @@
 package com.healthcare.cadusers.services;
 
 import com.healthcare.cadusers.entities.Credential;
+import com.healthcare.cadusers.entities.PhoneNumber;
 import com.healthcare.cadusers.entities.User;
 import com.healthcare.cadusers.forms.UserForm;
 import com.healthcare.cadusers.repositories.CredentialRepository;
@@ -13,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.InvalidPropertiesFormatException;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -33,12 +34,26 @@ public class UserServices implements UserServicesInterface {
             Credential credential = userForm.getCredential();
             Map<String, String> checkCredential = validateCredential(credential);
             Map<String, String> ret = new HashMap<>();
+            Map<String, String> checkPhones = validatePhones(userForm.getPhone());
             ret.putAll(checkUser);
             ret.putAll(checkCredential);
+            ret.putAll(checkPhones);
 
             checkValidationsReturn(ret);
-            userRepository.save(user);
 
+            userRepository.save(user);
+            credentialRepository.save(credential);
+            phoneNumberRepository.saveAll(userForm.getPhone());
+        }catch (InvalidDataError error){
+            throw new InvalidDataError(error.getMessage());
+        }
+    }
+
+    public void validatePhonesUserForm(List<PhoneNumber> phonesNumbers){
+        try {
+            Map<String, String> checkNumbers = validatePhones(phonesNumbers);
+            checkValidationsReturn(checkNumbers);
+            phoneNumberRepository.saveAll(phonesNumbers);
         }catch (InvalidDataError error){
             throw new InvalidDataError(error.getMessage());
         }
