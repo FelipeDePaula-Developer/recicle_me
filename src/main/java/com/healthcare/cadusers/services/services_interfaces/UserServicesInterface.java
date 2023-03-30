@@ -21,11 +21,11 @@ public interface UserServicesInterface extends ValidateServices {
         boolean emailCheck = checkEmail(user.getEmail());
         Map<String, String> ret = new HashMap<>();
         if (!emailCheck)
-            ret.put("email", "Email is invalid");
+            ret.put("email", "Email "+user.getEmail()+" is invalid");
 
         boolean cpfCheck = checkCPF(user.getCpf());
         if (!cpfCheck)
-            ret.put("cpf", "CPF is invalid");
+            ret.put("cpf", "CPF "+user.getCpf()+" is invalid");
 
         return ret;
     }
@@ -34,11 +34,11 @@ public interface UserServicesInterface extends ValidateServices {
         Map<String, String> ret = new HashMap<>();
         boolean usernameCheck = checkUsername(credential.getLogin());
         if (!usernameCheck)
-            ret.put("login", "Login is invalid");
+            ret.put("login", "Login "+credential.getLogin()+" is invalid");
 
         boolean passwordCheck = checkPassword(credential.getPassword());
         if (!passwordCheck)
-            ret.put("password", "Password is invalid");
+            ret.put("password", "Password "+credential.getPassword()+" is invalid");
 
         return ret;
     }
@@ -48,19 +48,19 @@ public interface UserServicesInterface extends ValidateServices {
         phonesNumbers.forEach(phoneNumber -> {
             boolean ddiCheck = checkDDI(phoneNumber.getPhoneDDI());
             if (!ddiCheck)
-                ret.put("ddi", "DDI is invalid");
+                ret.put("ddi", "DDI " + phoneNumber.getPhoneDDI() +  " is invalid");
 
             boolean dddCheck = checkDDD(phoneNumber.getPhoneDDD());
             if (!dddCheck)
-                ret.put("ddd", "DDD is invalid");
+                ret.put("ddd", "DDD " +phoneNumber.getPhoneDDD()+ " is invalid");
 
             boolean numberCheck = checkNumber(phoneNumber.getPhoneNumber());
             if (!numberCheck)
-                ret.put("phone_number", "phone number is invalid");
+                ret.put("phone_number", "phone "+phoneNumber.getPhoneNumber()+" number is invalid");
 
             boolean typeCheck = checkTypeNumber(phoneNumber.getPhoneType());
             if (!typeCheck)
-                ret.put("type_number", "phone type is invalid");
+                ret.put("type_number", "phone "+phoneNumber.getPhoneType()+" type is invalid");
         });
 
         return ret;
@@ -68,9 +68,13 @@ public interface UserServicesInterface extends ValidateServices {
 
     public default void checkValidationsReturn(Map<String, String> returns) throws InvalidDataError {
         if (returns != null && !returns.isEmpty()) {
-            String errorMsg = returns.entrySet().stream().map(
-                    (entry) -> " | " + entry.getKey() + " : " + entry.getValue()).toString();
-            throw new InvalidDataError(errorMsg);
+            StringBuilder errorMsg = new StringBuilder("{");
+            for (String key : returns.keySet()){
+                errorMsg.append(key).append(" : ").append(returns.get(key)).append(", ");
+            }
+            errorMsg.delete(errorMsg.length() - 2, errorMsg.length()).append("}");
+            System.out.println(errorMsg.toString());
+            throw new InvalidDataError(errorMsg.toString());
         }
     }
 }

@@ -24,7 +24,7 @@ public class CadUsersController {
             userServices.validateUserForm(userForm);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (InvalidDataError error) {
-            throw new InvalidDataError(error.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getMessage());
         }
     }
 }

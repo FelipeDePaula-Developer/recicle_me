@@ -48,14 +48,4 @@ public class UserServices implements UserServicesInterface {
             throw new InvalidDataError(error.getMessage());
         }
     }
-
-    public void validatePhonesUserForm(List<PhoneNumber> phonesNumbers){
-        try {
-            Map<String, String> checkNumbers = validatePhones(phonesNumbers);
-            checkValidationsReturn(checkNumbers);
-            phoneNumberRepository.saveAll(phonesNumbers);
-        }catch (InvalidDataError error){
-            throw new InvalidDataError(error.getMessage());
-        }
-    }
 }
