@@ -26,13 +26,13 @@ public class Credential {
     @JoinColumn(name = "iddoctor", referencedColumnName = "iddoctor")
     private Doctor doctor;
 
-    @ManyToOne
-    @JoinColumn(name = "iduser", referencedColumnName = "iduser")
-    private User user;
+        @ManyToOne
+        @JoinColumn(name = "iduser", referencedColumnName = "iduser")
+        private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "idclient", referencedColumnName = "idclient")
-    private Client client;
+        @ManyToOne
+        @JoinColumn(name = "idclient", referencedColumnName = "idclient")
+        private Client client;
 
     public Credential() {
     }

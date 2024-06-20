@@ -65,16 +65,4 @@ public interface UserServicesInterface extends ValidateServices {
 
         return ret;
     }
-
-    public default void checkValidationsReturn(Map<String, String> returns) throws InvalidDataError {
-        if (returns != null && !returns.isEmpty()) {
-            StringBuilder errorMsg = new StringBuilder("{");
-            for (String key : returns.keySet()){
-                errorMsg.append(key).append(" : ").append(returns.get(key)).append(", ");
-            }
-            errorMsg.delete(errorMsg.length() - 2, errorMsg.length()).append("}");
-            System.out.println(errorMsg.toString());
-            throw new InvalidDataError(errorMsg.toString());
-        }
-    }
 }
