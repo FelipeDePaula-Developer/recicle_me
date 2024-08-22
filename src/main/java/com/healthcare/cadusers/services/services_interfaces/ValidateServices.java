@@ -1,55 +1,47 @@
-package com.healthcare.cadusers.services;
+package com.healthcare.cadusers.services.services_interfaces;
 
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-@Component
 public interface ValidateServices {
 
-    public default boolean checkEmail(String email){
+    default boolean checkEmail(String email) {
         String regexEmail = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
         return Pattern.matches(regexEmail, email);
     }
 
-    public default boolean checkCPF(String cpf) {
-        cpf = cpf.replaceAll("\\D+", "");
-        String regexCPF = "^\\d{11}$";
-        return Pattern.matches(regexCPF, cpf);
+    default boolean checkCPF(String cpf) {
+        if (cpf == null || cpf.isEmpty()) return false;
+
+        String cleanedCpf = cpf.replaceAll("\\D+", "");
+        if (cleanedCpf.length() != 11) return false;
+
+        String firstPartCpf = cleanedCpf.substring(0, 9);
+        int firstVerifyDigitCpf = calculateVerifyDigit(firstPartCpf, 2);
+
+        String secondPartCpf = firstPartCpf + firstVerifyDigitCpf;
+        int secondVerifyDigitCpf = calculateVerifyDigit(secondPartCpf, 2);
+
+        String verifyNumbers = "" + firstVerifyDigitCpf + secondVerifyDigitCpf;
+        return verifyNumbers.equals(cleanedCpf.substring(cleanedCpf.length() - 2));
     }
 
-    public default boolean checkPassword(String password){
+    default int calculateVerifyDigit(String cpfPart, int startMultiplier) {
+        int sum = 0;
+        for (int i = 0; i < cpfPart.length(); i++) {
+            int digit = Character.getNumericValue(cpfPart.charAt(cpfPart.length() - 1 - i));
+            sum += digit * (startMultiplier + i);
+        }
+        int modulo = sum % 11;
+        return modulo >= 2 ? 11 - modulo : 0;
+    }
+
+    default boolean checkPassword(String password) {
         String regexPassword = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
         return Pattern.matches(regexPassword, password);
     }
 
-    public default boolean checkUsername(String login) {
+    default boolean checkUsername(String login) {
         String regexLogin = "^[a-zA-Z0-9_-]{3,20}$";
         return Pattern.matches(regexLogin, login);
-    }
-
-    public default boolean checkDDI(String phoneDDI) {
-        String regexDDI = "^(?:\\d{1,4}\\s?)?\\(?\\d{1,4}\\)?\\s?\\d{6,}$";
-        return Pattern.matches(regexDDI, phoneDDI);
-    }
-
-    public default boolean checkDDD(String phoneDDD) {
-        String regexDDD = "^(1[1-9]|[2-9][0-9])$";
-        return Pattern.matches(regexDDD, phoneDDD);
-    }
-
-    public default boolean checkNumber(String phoneNumber) {
-        String regexNumber = "^[0-9]{1,20}$";
-        return Pattern.matches(regexNumber, phoneNumber);
-    }
-
-    public default boolean checkTypeNumber(String typeNumber){
-        ArrayList<String> types = new ArrayList<>();
-        types.add("RE");
-        types.add("CO");
-        types.add("CE");
-        types.add("CN");
-        return types.contains(typeNumber);
     }
 }
