@@ -1,13 +1,10 @@
 package com.healthcare.cadusers.services;
 
-import com.healthcare.cadusers.entities.Client;
 import com.healthcare.cadusers.entities.PhoneNumber;
 import com.healthcare.cadusers.entities.User;
 import com.healthcare.cadusers.entities.interfaces.Person;
-import com.healthcare.cadusers.forms.ClientForm;
 import com.healthcare.cadusers.forms.UserForm;
 import com.healthcare.cadusers.forms.results.PersonFormResult;
-import com.healthcare.cadusers.repositories.ClientRepository;
 import com.healthcare.cadusers.repositories.PhoneNumberRepository;
 import com.healthcare.cadusers.repositories.UserRepository;
 import com.healthcare.cadusers.services.services_interfaces.PhoneServicesInterface;
@@ -24,9 +21,6 @@ public class UserServices implements UserServicesInterface, PhoneServicesInterfa
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private ClientRepository clientRepository;
 
     @Autowired
     private PhoneNumberServices phoneNumberServices;
@@ -52,20 +46,6 @@ public class UserServices implements UserServicesInterface, PhoneServicesInterfa
         userForm.getCredential().setUser(savedUser);
         credentialServices.saveCredential(userForm.getCredential());
 
-        return personFormResult;
-    }
-
-    @Transactional
-    public PersonFormResult registerClient(ClientForm clientForm) {
-        PersonFormResult personFormResult = validateCommomFields(clientForm.getClient(), clientForm.getPhone());
-        if (personFormResult.hasErrors()) {
-            return personFormResult;
-        }
-
-        Client savedClient = saveOrUpdateByCPF(clientForm.getClient(), clientRepository, cpf -> clientRepository.findByCpf(cpf));
-        clientForm.getPhone().forEach(phone -> phone.setClient(savedClient));
-
-        phoneNumberRepository.saveAll(clientForm.getPhone());
         return personFormResult;
     }
 

@@ -26,10 +26,6 @@ public class PhoneNumber {
     @JoinColumn(name = "iduser", referencedColumnName = "iduser")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "idclient", referencedColumnName = "idclient")
-    private Client client;
-
     @Column(length = 3, name = "phone_ddi")
     private String phoneDDI;
 
