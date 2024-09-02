@@ -1,6 +1,6 @@
 services:
-  healthcare_caduser:
-    container_name: healthcare_cadusers
+  recicle_me_caduser:
+    container_name: recicle_me_cadusers
     image: cadusers
     build:
       context: .
@@ -23,7 +23,7 @@ services:
     user: postgres
     environment:
       POSTGRES_HOST: postgresqldb
-      POSTGRES_DB: healthcare
+      POSTGRES_DB: recicle_me
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
     healthcheck:
