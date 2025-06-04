@@ -2,6 +2,7 @@ package com.recicle_me.cadusers.controllers;
 
 import com.recicle_me.cadusers.entities.PontoColeta;
 import com.recicle_me.cadusers.entities.TipoColeta;
+import com.recicle_me.cadusers.forms.PontoColetaForm;
 import com.recicle_me.cadusers.forms.results.PontoColetaFormResult;
 import com.recicle_me.cadusers.repositories.TipoColetaRepository;
 import com.recicle_me.cadusers.services.PontoColetaServices;
@@ -30,8 +31,8 @@ public class PontoColetaController {
     }
 
     @PostMapping("cad/ponto_coleta")
-    public ResponseEntity<Object> cadPontoColeta(@RequestBody PontoColeta pontoColeta) {
-        PontoColetaFormResult pontoColetaFormResult = pontoColetaServices.validatePontoColeta(pontoColeta);
+    public ResponseEntity<Object> cadPontoColeta(@RequestBody PontoColetaForm pontoColetaForm) {
+        PontoColetaFormResult pontoColetaFormResult = pontoColetaServices.validatePontoColeta(pontoColetaForm);
 
         if (pontoColetaFormResult.hasErrors()) {
             return new ResponseEntity<>(pontoColetaFormResult.getAllErrors(), HttpStatus.BAD_REQUEST);
@@ -39,6 +40,7 @@ public class PontoColetaController {
             return new ResponseEntity<>("Ponto de Coleta Cadastrado", HttpStatus.OK);
         }
     }
+
     @PostMapping("cad/tipo_coleta")
     public ResponseEntity<Object> cadTipoColeta(@RequestBody TipoColeta tipoColeta) {
         if (tipoColeta.getPontoColeta() != null && tipoColeta.getTipoDescarte() != null) {

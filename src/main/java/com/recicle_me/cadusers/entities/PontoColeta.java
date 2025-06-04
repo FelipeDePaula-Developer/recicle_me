@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Data
 @Entity
 @Component
@@ -14,7 +16,7 @@ public class PontoColeta {
     private Integer idPontoColeta;
 
     @ManyToOne
-    @JoinColumn(name = "iduser", referencedColumnName = "iduser")
+    @JoinColumn(name = "id_user", referencedColumnName = "id_user")
     private User user;
 
     @Column
