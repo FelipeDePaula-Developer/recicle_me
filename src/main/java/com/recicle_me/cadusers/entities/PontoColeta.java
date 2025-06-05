@@ -16,7 +16,7 @@ public class PontoColeta {
     private Integer idPontoColeta;
 
     @ManyToOne
-    @JoinColumn(name = "id_user", referencedColumnName = "id_user")
+    @JoinColumn(name = "id_user", referencedColumnName = "idUser")
     private User user;
 
     @Column
