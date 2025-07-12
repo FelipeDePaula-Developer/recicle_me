@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.Map;
+
 @RestController
 public class UserController {
 
@@ -29,10 +31,16 @@ public class UserController {
         PersonFormResult personFormResult = userServices.registerUser(userForm);
 
         if (personFormResult.hasErrors()) {
-            return new ResponseEntity<>(personFormResult.getAllErrors(), HttpStatus.BAD_REQUEST);
-        } else {
-            return new ResponseEntity<>("Validation passed", HttpStatus.OK);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                    "status", "BAD_REQUEST",
+                    "messages", personFormResult.getAllErrors() // deve ser List<Map<String, String>>
+            ));
         }
+
+        return ResponseEntity.ok(Map.of(
+                "status", "OK",
+                "message", "Usuário cadastrado com sucesso"
+        ));
     }
 
     @PostMapping("/user/login")
@@ -42,10 +50,8 @@ public class UserController {
 
         if (token != null && !Boolean.FALSE.equals(token)) {
             Cookie cookie = new Cookie("jwt", token.toString());
-
             response.setHeader("Access-Control-Expose-Headers", "Set-Cookie");
             response.setHeader("Access-Control-Allow-Credentials", "true");
-
             cookie.setHttpOnly(true);
             cookie.setSecure(true);
             cookie.setPath("/");
@@ -53,9 +59,15 @@ public class UserController {
             cookie.setAttribute("SameSite", "None");
 
             response.addCookie(cookie);
-            return new ResponseEntity<>("Logged", HttpStatus.OK);
+            return ResponseEntity.ok(Map.of(
+                    "status", "OK",
+                    "message", "Login realizado com sucesso"
+            ));
         } else {
-            return new ResponseEntity<>("Login Fail", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                    "status", "UNAUTHORIZED",
+                    "message", "Login inválido. Verifique suas credenciais"
+            ));
         }
     }
 

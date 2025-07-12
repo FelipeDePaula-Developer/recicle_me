@@ -11,8 +11,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Arrays;
 
 @Configuration
 public class SecurityConfig {
@@ -30,12 +30,11 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/user/*", "auth/validate").permitAll()
-                        .requestMatchers("/chat/generate/gemini").authenticated()
+                        .requestMatchers("/user/*", "/auth/validate").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .headers(headers -> {
                     headers.contentSecurityPolicy(csp ->
                             csp.policyDirectives("default-src 'self'; script-src 'self'")
@@ -43,8 +42,8 @@ public class SecurityConfig {
                     headers.contentSecurityPolicy(csp ->
                             csp.policyDirectives("default-src 'self' 'unsafe-inline'")
                     );
-                    // headers.frameOptions(frame -> frame.disable()); // Descomente se precisar
                     headers.httpStrictTransportSecurity(hsts -> hsts.disable());
+                    // Se precisar liberar iframes: headers.frameOptions(frame -> frame.sameOrigin());
                 });
 
         return http.build();
@@ -55,7 +54,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of("http://172.18.0.4:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
+        configuration.setAllowedHeaders(List.of("Content-Type", "Authorization"));
         configuration.setExposedHeaders(List.of("Set-Cookie"));
         configuration.setAllowCredentials(true);
 

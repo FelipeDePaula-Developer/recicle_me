@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8081:8080"
+      - "8080:8080"
     depends_on:
         postgresqldb:
           condition: service_healthy
@@ -32,6 +32,19 @@ services:
       timeout: 5s
       retries: 2
     volumes:
-      - postgresqldb_data:/var/lib/postgresql/data
+      - postgresqldb:/var/lib/postgresql/data
+  recicle_me_front:
+    container_name: recicle_me_front
+    build:
+      context: ../recicle_me_front
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+        - recicle_me_caduser
 volumes:
-  postgresqldb_data:
+  postgresqldb:
+
+#networks:
+#  default:
+#    name: recicle_me_network
