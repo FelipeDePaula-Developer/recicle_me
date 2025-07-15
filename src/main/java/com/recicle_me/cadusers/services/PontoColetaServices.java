@@ -1,10 +1,14 @@
 package com.recicle_me.cadusers.services;
 
+import com.recicle_me.cadusers.entities.DiasPontoColeta;
 import com.recicle_me.cadusers.entities.PontoColeta;
+import com.recicle_me.cadusers.entities.TipoColeta;
 import com.recicle_me.cadusers.entities.User;
 import com.recicle_me.cadusers.forms.PontoColetaForm;
 import com.recicle_me.cadusers.forms.results.PontoColetaFormResult;
+import com.recicle_me.cadusers.repositories.DiasPontoColetaRepository;
 import com.recicle_me.cadusers.repositories.PontoColetaRepository;
+import com.recicle_me.cadusers.repositories.TipoColetaRepository;
 import com.recicle_me.cadusers.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,12 @@ public class PontoColetaServices {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    private DiasPontoColetaRepository diasPontoColetaRepository;
+
+    @Autowired
+    private TipoColetaRepository tipoColetaRepository;
 
     public boolean validateCep(String cep) {
         String regexCep = "^[0-9]{5}-?[0-9]{3}$";
@@ -81,6 +91,18 @@ public class PontoColetaServices {
         pontoColeta.setStatus(pontoColetaForm.getStatus());
         pontoColeta.setUser(user);
         pontoColetaRepository.save(pontoColeta);
+
+        if (pontoColetaForm.getTipoColeta() != null) {
+            TipoColeta tipoColeta = pontoColetaForm.getTipoColeta();
+            tipoColeta.setPontoColeta(pontoColeta);
+            tipoColetaRepository.save(tipoColeta);
+        }
+
+        if (pontoColetaForm.getDiasPontoColeta() != null) {
+            DiasPontoColeta diasPontoColeta = pontoColetaForm.getDiasPontoColeta();
+            diasPontoColeta.setPontoColeta(pontoColeta);
+            diasPontoColetaRepository.save(pontoColetaForm.getDiasPontoColeta());
+        }
 
         return errors;
     }

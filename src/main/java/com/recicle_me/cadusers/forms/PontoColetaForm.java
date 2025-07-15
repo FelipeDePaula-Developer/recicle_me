@@ -1,5 +1,7 @@
 package com.recicle_me.cadusers.forms;
 
+import com.recicle_me.cadusers.entities.DiasPontoColeta;
+import com.recicle_me.cadusers.entities.TipoColeta;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -13,4 +15,6 @@ public class PontoColetaForm {
     private String estado;
     private String status;
     private Integer userId;
+    private TipoColeta tipoColeta;
+    private DiasPontoColeta diasPontoColeta;
 }
