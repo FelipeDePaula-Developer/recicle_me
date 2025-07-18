@@ -3,8 +3,10 @@ package com.recicle_me.cadusers.services;
 import com.recicle_me.cadusers.entities.Credential;
 import com.recicle_me.cadusers.forms.AuthUserForm;
 import com.recicle_me.cadusers.repositories.CredentialRepository;
+import com.recicle_me.cadusers.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.security.SecureRandom;
@@ -21,6 +23,8 @@ public class CredentialServices {
     private static final int ITERATIONS = 120_000;
     private static final int KEY_LENGTH = 256;
     private static final String SECRET = "zxYtQ4oc_EDIKNq";
+    @Autowired
+    private JwtService jwtService;
 
     private String byteArrayToHexString(byte[] bytes) {
         return HexFormat.of().formatHex(bytes);
@@ -56,12 +60,15 @@ public class CredentialServices {
         credentialRepository.save(credential);
     }
 
-    public boolean authenticate(AuthUserForm authUserForm) {
+    public String authenticate(AuthUserForm authUserForm) {
         Credential credential = credentialRepository.findByLogin(authUserForm.getLogin());
         if (credential == null) {
-            return false;
+            return "";
         }
         String hashedPassword = generateHash(authUserForm.getPassword(), credential.getSalt());
-        return hashedPassword.equals(credential.getPassword());
+        if (hashedPassword.equals(credential.getPassword()))
+            return jwtService.generateToken(credential.getUser().getIdUser());
+
+        return "";
     }
 }

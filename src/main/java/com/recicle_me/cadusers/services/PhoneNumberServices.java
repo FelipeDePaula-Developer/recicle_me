@@ -17,7 +17,6 @@ public class PhoneNumberServices implements PhoneServicesInterface {
     }
 
     public boolean phoneNumberExists(PhoneNumber phoneNumber) {
-        // Usando o operador ternário para lidar com possíveis valores nulos
         String ddi = phoneNumber.getPhoneDDI() != null ? phoneNumber.getPhoneDDI() : "";
         String ddd = phoneNumber.getPhoneDDD() != null ? phoneNumber.getPhoneDDD() : "";
         String number = phoneNumber.getPhoneNumber() != null ? phoneNumber.getPhoneNumber() : "";

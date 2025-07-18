@@ -89,6 +89,8 @@ public class PontoColetaServices {
         pontoColeta.setCidade(pontoColetaForm.getCidade());
         pontoColeta.setEstado(pontoColetaForm.getEstado());
         pontoColeta.setStatus(pontoColetaForm.getStatus());
+        pontoColeta.setLatitude(pontoColetaForm.getLatitude());
+        pontoColeta.setLongitude(pontoColetaForm.getLongitude());
         pontoColeta.setUser(user);
         pontoColetaRepository.save(pontoColeta);
 
@@ -99,9 +101,8 @@ public class PontoColetaServices {
         }
 
         if (pontoColetaForm.getDiasPontoColeta() != null) {
-            DiasPontoColeta diasPontoColeta = pontoColetaForm.getDiasPontoColeta();
-            diasPontoColeta.setPontoColeta(pontoColeta);
-            diasPontoColetaRepository.save(pontoColetaForm.getDiasPontoColeta());
+            pontoColetaForm.getDiasPontoColeta().forEach(dia -> dia.setPontoColeta(pontoColeta));
+            diasPontoColetaRepository.saveAll(pontoColetaForm.getDiasPontoColeta());
         }
 
         return errors;

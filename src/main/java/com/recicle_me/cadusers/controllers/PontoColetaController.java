@@ -12,9 +12,9 @@ import com.recicle_me.cadusers.services.PontoColetaServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 public class PontoColetaController {
@@ -40,9 +40,15 @@ public class PontoColetaController {
         PontoColetaFormResult pontoColetaFormResult = pontoColetaServices.validatePontoColeta(pontoColetaForm);
 
         if (pontoColetaFormResult.hasErrors()) {
-            return new ResponseEntity<>(pontoColetaFormResult.getAllErrors(), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                    "status", "BAD_REQUEST",
+                    "messages", pontoColetaFormResult.getAllErrors()
+            ));
         } else {
-            return new ResponseEntity<>("Ponto de Coleta Cadastrado", HttpStatus.OK);
+            return ResponseEntity.ok(Map.of(
+                    "status", "OK",
+                    "message", "Ponto de Coleta Cadastrado"
+            ));
         }
     }
 
@@ -64,4 +70,13 @@ public class PontoColetaController {
         tipoColetaRepository.save(tipoColeta);
         return new ResponseEntity<>("Tipo de descarte cadastrado", HttpStatus.OK);
     }
+
+//    @GetMapping("/pontos/{tipo}")
+//    public ResponseEntity<Object> cadTipoColeta(
+//            @PathVariable("tipo") String tipo
+//    ) {
+//        DTOLocalPontos dtoLocalPontos = pontoColetaServices.getPontosByType(tipo);
+//
+//        return ResponseEntity.ok("Recebido tipo: " + tipo);
+//    }
 }

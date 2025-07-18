@@ -34,6 +34,12 @@ public class PontoColeta {
     @Column
     private String estado;
 
+    @Column
+    private String latitude;
+
+    @Column
+    private String longitude;
+
     @Column(length = 1, nullable = false)
     private String status = "T";
 }

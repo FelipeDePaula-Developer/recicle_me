@@ -54,9 +54,9 @@ public class UserServices implements UserServicesInterface, PhoneServicesInterfa
 
         if (!credentialServices.loginExists(userForm.getCredential())) {
             Map<String, String> retCredential = validateCredential(userForm.getCredential());
-            retCredential.forEach((campo, erro) -> personFormResult.addUserError(campo, erro));
+            retCredential.forEach(personFormResult::addUserError);
         } else {
-            personFormResult.addUserError("duplicate_login", "O login " + userForm.getCredential().getLogin() + " já está em uso");
+            personFormResult.addUserError("login", "O login " + userForm.getCredential().getLogin() + " já está em uso");
         }
 
         return personFormResult;
@@ -66,13 +66,13 @@ public class UserServices implements UserServicesInterface, PhoneServicesInterfa
         PersonFormResult personFormResult = new PersonFormResult();
 
         Map<String, String> retUser = validatePerson(person);
-        retUser.forEach((campo, erro) -> personFormResult.addUserError(campo, erro));
+        retUser.forEach(personFormResult::addUserError);
 
         boolean skipPhoneValidation = false;
         for (PhoneNumber phoneNumber : phone) {
             if (phoneNumberServices.phoneNumberExists(phoneNumber)) {
                 personFormResult.addUserError(
-                        "duplicate_number",
+                        "number",
                         "Combinação de DDI (" + phoneNumber.getPhoneDDI() + "), DDD (" + phoneNumber.getPhoneDDD() + ") e Numero " + phoneNumber.getPhoneNumber() + " já existem na base de dados"
                 );
                 skipPhoneValidation = true;
@@ -81,7 +81,7 @@ public class UserServices implements UserServicesInterface, PhoneServicesInterfa
 
         if (!skipPhoneValidation) {
             Map<String, String> retPhones = validatePhones(phone);
-            retPhones.forEach((campo, erro) -> personFormResult.addUserError(campo, erro));
+            retPhones.forEach(personFormResult::addUserError);
         }
 
         return personFormResult;
