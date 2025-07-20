@@ -23,6 +23,9 @@ public class PontoColeta {
     private String cep;
 
     @Column
+    private String nome;
+
+    @Column
     private String logradouro;
 
     @Column

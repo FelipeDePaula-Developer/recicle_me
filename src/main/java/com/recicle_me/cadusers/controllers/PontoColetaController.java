@@ -1,5 +1,7 @@
 package com.recicle_me.cadusers.controllers;
 
+import com.recicle_me.cadusers.dto.DTOLocalPontos;
+import com.recicle_me.cadusers.dto.DTOPonto;
 import com.recicle_me.cadusers.entities.PontoColeta;
 import com.recicle_me.cadusers.entities.TipoColeta;
 import com.recicle_me.cadusers.entities.User;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -71,12 +74,28 @@ public class PontoColetaController {
         return new ResponseEntity<>("Tipo de descarte cadastrado", HttpStatus.OK);
     }
 
-//    @GetMapping("/pontos/{tipo}")
-//    public ResponseEntity<Object> cadTipoColeta(
-//            @PathVariable("tipo") String tipo
-//    ) {
-//        DTOLocalPontos dtoLocalPontos = pontoColetaServices.getPontosByType(tipo);
-//
-//        return ResponseEntity.ok("Recebido tipo: " + tipo);
-//    }
+    @GetMapping("/pontos/list/{tipo}")
+    public ResponseEntity<Object> ListPontosColetaByTipo(@PathVariable("tipo") String tipo) {
+        List<DTOLocalPontos> dtoLocalPontos = pontoColetaServices.buscarPontosPorTipo(tipo);
+
+        if (dtoLocalPontos.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Nenhum ponto de coleta encontrado para o tipo: " + tipo);
+        }
+
+        return ResponseEntity.ok(dtoLocalPontos);
+    }
+
+    @GetMapping("/pontos/{id}")
+    public ResponseEntity<Object> ListPontoById(@PathVariable("id") Integer id) {
+        DTOPonto ponto = pontoColetaServices.buscarPorId(id);
+
+        if (ponto == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Nenhum ponto de coleta encontrado.");
+        }
+
+        return ResponseEntity.ok(ponto);
+    }
+
 }

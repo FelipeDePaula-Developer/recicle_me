@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PontoColetaForm {
     private String cep;
+    private String nome;
     private String logradouro;
     private String bairro;
     private String cidade;

@@ -1,5 +1,7 @@
 package com.recicle_me.cadusers.services;
 
+import com.recicle_me.cadusers.dto.DTOLocalPontos;
+import com.recicle_me.cadusers.dto.DTOPonto;
 import com.recicle_me.cadusers.entities.DiasPontoColeta;
 import com.recicle_me.cadusers.entities.PontoColeta;
 import com.recicle_me.cadusers.entities.TipoColeta;
@@ -13,8 +15,12 @@ import com.recicle_me.cadusers.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class PontoColetaServices {
@@ -108,4 +114,46 @@ public class PontoColetaServices {
         return errors;
     }
 
+    public List<DTOLocalPontos> buscarPontosPorTipo(String tipoDescarte) {
+        List<PontoColeta> pontos = pontoColetaRepository.findByTipoDescarte(tipoDescarte);
+
+        return pontos.stream().map(pc -> {
+            String endereco = pc.getLogradouro() + ", " + pc.getBairro() + ", " + pc.getCidade();
+            ArrayList<String> geo = new ArrayList<>();
+            geo.add(pc.getLatitude());
+            geo.add(pc.getLongitude());
+
+            return new DTOLocalPontos(pc.getIdPontoColeta(), pc.getNome(), endereco, geo);
+        }).toList();
+    }
+
+    public DTOPonto buscarPorId(Integer idPontoColeta) {
+        PontoColeta ponto = pontoColetaRepository.findById(idPontoColeta)
+                .orElseThrow(() -> new RuntimeException("Ponto de coleta não encontrado"));
+
+        List<String> tipos = tipoColetaRepository
+                .findByPontoColeta_IdPontoColeta(ponto.getIdPontoColeta())
+                .stream()
+                .map(TipoColeta::getTipoDescarte)
+                .collect(Collectors.toList());
+
+        Map<String, DTOPonto.HorarioDTO> horarios = diasPontoColetaRepository
+                .findByPontoColeta_IdPontoColeta(ponto.getIdPontoColeta())
+                .stream()
+                .collect(Collectors.toMap(
+                        DiasPontoColeta::getDayFlag,
+                        d -> new DTOPonto.HorarioDTO(d.getOpenHour(), d.getCloseHour())
+                ));
+
+        String endereco = String.format("%s, %s, %s",
+                ponto.getLogradouro(), ponto.getBairro(), ponto.getCidade());
+
+        return DTOPonto.builder()
+                .idPontoColeta(ponto.getIdPontoColeta())
+                .nome(ponto.getNome())
+                .endereco(endereco)
+                .tiposColeta(tipos)
+                .diasPontoColeta(horarios)
+                .build();
+    }
 }
