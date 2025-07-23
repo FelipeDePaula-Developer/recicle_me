@@ -22,6 +22,6 @@ public class PontoColetaForm {
     private String latitude;
     private String longitude;
     private Integer userId;
-    private TipoColeta tipoColeta;
+    private List<TipoColeta> tipoColeta;
     private List<DiasPontoColeta> diasPontoColeta;
 }

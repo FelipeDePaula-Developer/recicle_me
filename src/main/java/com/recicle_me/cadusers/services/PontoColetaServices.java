@@ -95,15 +95,15 @@ public class PontoColetaServices {
         pontoColeta.setCidade(pontoColetaForm.getCidade());
         pontoColeta.setEstado(pontoColetaForm.getEstado());
         pontoColeta.setStatus(pontoColetaForm.getStatus());
+        pontoColeta.setNome(pontoColetaForm.getNome());
         pontoColeta.setLatitude(pontoColetaForm.getLatitude());
         pontoColeta.setLongitude(pontoColetaForm.getLongitude());
         pontoColeta.setUser(user);
         pontoColetaRepository.save(pontoColeta);
 
         if (pontoColetaForm.getTipoColeta() != null) {
-            TipoColeta tipoColeta = pontoColetaForm.getTipoColeta();
-            tipoColeta.setPontoColeta(pontoColeta);
-            tipoColetaRepository.save(tipoColeta);
+            pontoColetaForm.getTipoColeta().forEach(tipoColeta -> tipoColeta.setPontoColeta(pontoColeta));
+            tipoColetaRepository.saveAll(pontoColetaForm.getTipoColeta());
         }
 
         if (pontoColetaForm.getDiasPontoColeta() != null) {
